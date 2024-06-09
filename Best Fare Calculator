@@ -1,0 +1,94 @@
+// A java calculator that calculates public transport fares.
+
+public class TransitCalculator {
+    public int numDays;
+    public int numRides;
+    private static final double UNLIMITED_7_DAY_PRICE = 33.00;
+    private static final double UNLIMITED_30_DAY_PRICE = 127.00;
+
+    public double singleRide = 2.75;
+    
+    // Constructor
+    public TransitCalculator(int days, int rides) {
+      this.numDays = days;
+      this.numRides = rides;
+    }
+    
+    // Getter for numDays    
+    public int getNumDays() {
+      return numDays;
+    }
+
+    // Getter for numRides
+    public int getNumRides() {
+      return numRides;
+    }
+
+    // Setter for numDays
+    public void setNumDays(int numDays) {
+      this.numDays = numDays;
+    }
+
+    // Setter for numRides
+    public void setNumRides(int numRides) {
+      this.numRides = numRides;
+    }
+
+    // Method for 7-day unlimited passes.
+    public double unlimited7Price() {
+      int numPasses = (int) Math.ceil((double) numDays / 7);
+      double totalCost = numPasses * UNLIMITED_7_DAY_PRICE;
+      return totalCost / numRides;
+    }
+
+    // Method for 30-day unlimited passes.
+    public double unlimited30Price() {
+      int numPasses = (int) Math.ceil((double) numDays / 30);
+      double totalCost = numPasses * UNLIMITED_30_DAY_PRICE;
+      return totalCost / numRides;
+    }
+
+    // Method to get the price per ride for each fare option.
+    public double[] getRidePrices() {
+      double singleRidePrice = singleRide;
+      double sevenDayUnlimitedPrice = unlimited7Price();
+      double thirtyDayUnlimitedPrice = unlimited30Price();
+      
+      return new double[] { singleRidePrice, sevenDayUnlimitedPrice, thirtyDayUnlimitedPrice };
+    }
+
+public String getBestFare() {
+    double[] ridePrices = getRidePrices();
+    
+    // Initialize variables to hold the lowest price and its corresponding fare method
+    double lowestPrice = ridePrices[0]; // Assume the first price is the lowest initially
+    String bestFareMethod = "Single Ride"; // Assume the single ride is the best fare method initially
+    
+    // Loop through the ride prices to find the lowest price and its corresponding fare method
+    for (int i = 1; i < ridePrices.length; i++) {
+        if (ridePrices[i] < lowestPrice) {
+            lowestPrice = ridePrices[i];
+            switch (i) {
+                case 1:
+                    bestFareMethod = "7-Day Unlimited";
+                    break;
+                case 2:
+                    bestFareMethod = "30-Day Unlimited";
+                    break;
+            }
+        }
+    }
+    
+    // Construct and return the string communicating the findings
+    return "You should get the " + bestFareMethod + " option at $" + String.format("%.2f", lowestPrice) + " per ride.";
+}
+
+    public static void main(String[] args) {
+      TransitCalculator transit1 = new TransitCalculator(12, 30);
+      double[] prices = transit1.getRidePrices();
+      
+      System.out.println("Single Ride Price: " + prices[0]);
+      System.out.println("7-Day Unlimited Price per Ride: " + prices[1]);
+      System.out.println("30-Day Unlimited Price per Ride: " + prices[2]);
+    }
+}
